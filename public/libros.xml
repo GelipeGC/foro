@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conceptos>
+  <concepto ClaveProdServ="84111506" Cantidad="0" Unidad="ACT" ClaveUnidad="ZZ" Descripcion="Pago" ValorUnitario="0" Importe="0"/>
+</conceptos>
+<Complemento>
+  <Pago10:Pagos Version="1.0" xsi:schemaLocation="http://www.sat.gob.mx/Pagos http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos10.xsd" FechaPago="2017-07-26T09:00:00" FormaDePago="06" MonedaP="MXN" Monto="100" RfcEmisorCtaOrd="XEXX010101000" CtaOrdenante="1234567890">
+    <Pago10:Pago>
+      <Pago10:DoctoRelacionado IdDocumento="10293" MonedaDR="10293" MetodoDePagoDR="10293" NumParcialidad="10293" ImpSaldoAnt="10293" ImpPagado="10293" ImpSaldoInsoluto="10293"/>
+      <pago10:Impuestos TotalInpuestosRetenidos="1203"/>
+      <Retenciones>
+        <Retencion Impuesto="023" Importe="102"/>
+      </Retenciones>
+    </Pago10:Pago>
+  </Pago10:Pagos>
+</Complemento>

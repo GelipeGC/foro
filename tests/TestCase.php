@@ -1,5 +1,5 @@
 <?php
-
+use App\User;
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
     /**
@@ -8,6 +8,8 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @var string
      */
     protected $baseUrl = 'http://localhost';
+
+    protected $defaultUser;
 
     /**
      * Creates the application.
@@ -21,5 +23,14 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
         return $app;
+    }
+
+    public function defaultUser()
+    {
+        if ($this->defaultUser) {
+            return $this->defaultUser;
+        }
+
+        return $this->defaultUser = factory(User::class)->create();
     }
 }
