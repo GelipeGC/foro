@@ -11,22 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [
+    'uses'  => 'PostController@index',
+    'as'    => 'posts.index'
+]);
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
-//create a post
-Route::get('posts/create',[
-    'uses' => 'CreatePostController@create',
-    'as'    => 'posts.create',
-]);
-
-Route::post('posts/store', [
-    'uses'  => 'CreatePostController@store',
-    'as'    => 'posts.store',
-]);
-Route::get('/testxml', 'CreatePostController@testxml');
+Route::get('posts/{post}-{slug}', [
+    'uses'  => 'PostController@show',
+    'as'    => 'posts.show'
+])->where('post', '\d+');
