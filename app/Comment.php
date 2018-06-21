@@ -8,10 +8,6 @@ class Comment extends Model
 {
     protected $fillable = ['comment','post_id','user_id'];
 
-    protected $casts = [
-        'answer' => 'boolean'
-    ];
-
     public function post()
     {
         return $this->belongsTo(Post::class);
@@ -19,10 +15,13 @@ class Comment extends Model
 
     public function markAsAnswer()
     {
-        $this->answer = true;
-        $this->save();
-
         $this->post->pending = false;
+        $this->post->answer_id = $this->id;
         $this->post->save();
+    }
+
+    public function getAnswerAttribute()
+    {
+        return $this->id === $this->post->answer_id;
     }
 }

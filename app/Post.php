@@ -3,6 +3,7 @@
 namespace App;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use GrahamCampbell\Markdown\Facades\Markdown;
 
 class Post extends Model
 {
@@ -21,14 +22,24 @@ class Post extends Model
         $this->attributes['slug'] = Str::slug($value);
     }
 
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function latestComments()
+    {
+        return $this->comments()->orderBy('created_at', 'DESC');
+    }
     public function getUrlAttribute()
     {
         return route('posts.show', [$this->id, $this->slug]);
     }
 
-    public function comment()
+    public function getSafeHtmlContentAttribute()
     {
-        return $this->hasMany(Comment::class);
+        return Markdown::convertToHtml(e($this->content));
     }
 
     
