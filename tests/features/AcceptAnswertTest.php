@@ -3,7 +3,7 @@
 
 use App\{User, Comment};
 
-class AcceptAnswertTest extends TestCase
+class AcceptAnswertTest extends FeatureTestCase
 {
     
     public function test_the_posts_autor_can_accept_a_comment_as_the_posts_answer()

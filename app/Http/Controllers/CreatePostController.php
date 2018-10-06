@@ -13,15 +13,17 @@ class CreatePostController extends Controller
 
     public function store(Request $request)
     {
+        
+
         $this->validate($request, [
             'title' => 'required',
             'content' => 'required',
         ]);
-        $post = new Post($request->all());
 
-        auth()->user()->posts()->save($post);
+        $post = auth()->user()->createPost($request->all());
+        
+        return redirect($post->url);
 
-        return "Post: ".$post->title;
     }
 
     public function testxml()
