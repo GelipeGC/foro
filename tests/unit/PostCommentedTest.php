@@ -20,7 +20,8 @@ class PostCommentedTest extends FeatureTestCase
         ]);
 
         $author = new User([
-            'name' => 'Felipe Guzman'
+            'first_name' => 'Felipe',
+            'last_name' => 'Guzman'
         ]);
         $comment = new Comment();
 
