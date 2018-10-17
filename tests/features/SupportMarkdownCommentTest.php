@@ -2,7 +2,7 @@
 
 
 
-class SupportMarkdownCommentTest extends TestCase
+class SupportMarkdownCommentTest extends FeatureTestCase
 {
     
     public function test_the_post_comments_support_markdown()

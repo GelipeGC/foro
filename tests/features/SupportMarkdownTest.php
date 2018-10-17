@@ -1,7 +1,7 @@
 <?php
 
 
-class SupportMarkdownTest extends TestCase
+class SupportMarkdownTest extends FeatureTestCase
 {
     
     public function test_the_post_content_support_markdown()
