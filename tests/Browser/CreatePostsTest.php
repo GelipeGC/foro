@@ -3,6 +3,7 @@
 namespace Tests\Browser;
 
 use App\Post;
+use App\Category;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -14,16 +15,19 @@ class CreatePostsTest extends DuskTestCase
     protected $title = 'Esta es una pregunta';
     protected $content = 'Este es el contenido';
 
-    function a_user_crate_a_post()
+    function test_a_user_crate_a_post()
     {
         $user = $this->defaultUser();
 
-        $this->browse(function ($browser) use ($user) {
+        $category = factory(Category::class)->create();
+
+        $this->browse(function ($browser) use ($user, $category) {
             // Having
             $browser->loginAs($user)
                 ->visitRoute('posts.create')
                 ->type('title', $this->title)
                 ->type('content', $this->content)
+                ->select('category_id', $category->id)
                 ->press('Publicar')
                 // Test a user is redirected to the posts details after creating it.
                 ->assertPathIs('/posts/1-esta-es-una-pregunta');

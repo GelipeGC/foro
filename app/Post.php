@@ -7,7 +7,7 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 
 class Post extends Model
 {
-    protected $fillable = ['title', 'content', 'pending'];
+    protected $fillable = ['title', 'content', 'pending','category_id'];
     protected $casts = [
         'pending' => 'boolean'
     ];
@@ -22,7 +22,10 @@ class Post extends Model
         $this->attributes['slug'] = Str::slug($value);
     }
 
-
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     public function comments()
     {
         return $this->hasMany(Comment::class);
