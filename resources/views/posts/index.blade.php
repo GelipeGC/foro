@@ -1,15 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-  <h1>Posts</h1>
-  @foreach($posts as $post)
-    <li>
-      <a href="{{ $post->url}}">
-        {{ $post->title}}
-      </a>
-    </li>
-  @endforeach
+    <div class="row">
+        <div class="col-md-12">
+            <h1>
+                {{ $category->exists ? 'Post de '.$category->name : 'Posts' }}
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        @include('posts.sidebar')
+        <div class="col-md-10">
+            {!! Form::open(['method' => 'get', 'class' => 'form form-inline' ]) !!}
 
-  {{ $posts->render()}}
+                {!! Form::select(
+                    'orden',
+                    trans('options.posts-order'),
+                    request('orden'),
+                    ['class' => 'form-control']
+                )!!}
 
+                <button type="submit" class="btn btn-primary">Ordenar</button>
+
+            {!! Form::close()!!}
+            
+            @each('posts.item', $posts, 'post')
+        
+
+            {{ $posts->render() }}
+        </div>
+    </div>
 @endsection
