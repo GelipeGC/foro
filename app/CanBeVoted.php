@@ -1,9 +1,53 @@
 <?php
 
 namespace App;
+use Collective\Html\HtmlFacade as Html;
 
 trait CanBeVoted
 {
+    public function votes()
+    {
+        return $this->morphMany(Vote::class, 'votable');
+    }
+
+    public function userVote()
+    {
+        return $this->morphOne(Vote::class, 'votable')
+            ->where('user_id', auth()->id())
+            ->withDefault();
+    } 
+
+    public function getCurrentVoteAttribute()
+    {
+        if (auth()->check()) {
+            return $this->userVote->vote;
+        }
+    }
+
+    public function getVoteFrom(User $user)
+    {
+        return $this->votes()
+            ->where('user_id', $user->id)
+            ->value('vote');
+    }
+
+    /**
+     * Renders the Vue vote component
+     */
+
+     public function getVoteComponentAttribute()
+     {
+         if (auth()->check()) {
+             return Html::tag('app-vote', '', [
+                 'module' => $this->getTable(),
+                 'id' => $this->id,
+                 'score' => $this->score,
+                 'vote' => $this->current_vote
+             ]);
+         }
+     }
+
+    
     public function upvote()
     {
         $this->addVote(1);
@@ -16,8 +60,8 @@ trait CanBeVoted
 
     protected function addVote($amount)
     {
-        Vote::updateOrCreate(
-            ['post_id' => $this->id, 'user_id' => auth()->id()],
+       $this->votes()->updateOrCreate(
+            ['user_id' => auth()->id()],
             ['vote' => $amount]
         );
 
@@ -26,19 +70,16 @@ trait CanBeVoted
 
     public function undoVote()
     {
-        Vote::where([
-            'post_id' => $this->id,
-            'user_id' => auth()->id(),
-        ])->delete();
-
+        $this->votes()
+            ->where('user_id', auth()->id())
+            ->delete();
+        
         $this->refreshPostScore();
     }
 
     protected function refreshPostScore()
     {
-        $this->score = Vote::query()
-            ->where(['post_id' => $this->id])
-            ->sum('vote');
+        $this->score = $this->votes()->sum('vote');
 
         $this->save();
     }

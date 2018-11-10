@@ -23,19 +23,16 @@ class APostCanBeVotedTest extends TestCase
     {
         $this->post->upvote();
 
-        $this->assertDatabaseHas('votes', [
-            'post_id' => $this->post->id,
-            'user_id' => $this->user->id,
-            'vote' => 1,
-        ]);
-
+        $this->assertSame(1, $this->post->current_vote);
+        
         $this->assertSame(1, $this->post->score);
+     
     }
 
     function test_a_post_cannot_be_upvoted_twice_by_the_same_user()
     {
         $this->post->upvote();
-
+        
         $this->post->upvote();
 
         $this->assertSame(1, Vote::count());
@@ -47,11 +44,7 @@ class APostCanBeVotedTest extends TestCase
     {
         $this->post->downvote();
 
-        $this->assertDatabaseHas('votes', [
-            'post_id' => $this->post->id,
-            'user_id' => $this->user->id,
-            'vote' => -1,
-        ]);
+        $this->assertSame(-1, $this->post->current_vote);
 
         $this->assertSame(-1, $this->post->score);
     }
@@ -91,11 +84,11 @@ class APostCanBeVotedTest extends TestCase
 
     function test_the_post_score_is_calculated_correctly()
     {
-        Vote::create([
-            'post_id' => $this->post->id,
+        $this->post->votes()->create([
             'user_id' => $this->anyone()->id,
             'vote' => 1,
         ]);
+        
 
         $this->post->upvote();
 
@@ -106,16 +99,37 @@ class APostCanBeVotedTest extends TestCase
 
     function test_a_post_can_be_unvoted()
     {
+        $this->assertNull($this->post->current_vote);
+
         $this->post->upvote();
 
         $this->post->undoVote();
 
-        $this->assertDatabaseMissing('votes', [
-            'post_id' => $this->post->id,
-            'user_id' => $this->user->id,
-            'vote' => 1,
-        ]);
+        $this->post->refresh();
+
+        $this->assertNull($this->post->current_vote);
 
         $this->assertSame(0, $this->post->score);
+    }
+
+    function test_get_vote_from_user()
+    {
+        $user = $this->defaultUser();
+
+        $post = $this->createPost();
+
+        $this->assertNull($post->getVoteFrom($user));
+        $this->actingAs($user);
+
+        $post->upvote();
+
+        $this->assertSame(1, $post->getVoteFrom($user));
+        
+        $post->downvote();
+
+        $this->assertSame(-1, $post->getVoteFrom($user));
+
+        $anotherPosrt = $this->createPost();
+        $this->assertNull($anotherPosrt->getVoteFrom($user));
     }
 }
