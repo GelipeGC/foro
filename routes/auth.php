@@ -1,6 +1,6 @@
 <?php
 
-Route::post('logout', 'Auth\LoginController@logout');
+Route::post('logout', 'LoginController@logout');
 
 //create a post
 Route::get('posts/create',[

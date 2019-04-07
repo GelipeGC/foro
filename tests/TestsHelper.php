@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\{Post, User};
+use Illuminate\Auth\AuthenticationException;
 
 trait TestsHelper
 {
@@ -28,6 +29,13 @@ trait TestsHelper
     protected function anyone(array $attributes = [])
     {
         return factory(User::class)->create($attributes);
+    }
+
+    protected function handleAuthenticationExceptions()
+    {
+        $this->withoutExceptionHandling([
+            AuthenticationException::class
+        ]);
     }
     
 }
